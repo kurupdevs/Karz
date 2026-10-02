@@ -2,7 +2,8 @@ package com.kurupdevs.karz.ui.screens.common
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.rememberSharedContentState
+// NOTE: rememberSharedContentState is a member of SharedTransitionScope since
+// Compose 1.12 (no longer a top-level function), resolved via with(scope).
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.kurupdevs.karz.nav.LocalNavVisibilityScope
@@ -25,7 +26,7 @@ fun mortgageCardSharedModifier(loanId: String): Modifier {
         Modifier.sharedBounds(
             sharedContentState = rememberSharedContentState(key = "mortgage-card-$loanId"),
             animatedVisibilityScope = visibility,
-            resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
+            resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
             boundsTransform = { _, _ -> Motion.easeOutQuint(400) }
         )
     }

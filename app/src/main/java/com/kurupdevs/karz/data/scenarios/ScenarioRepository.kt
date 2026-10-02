@@ -52,8 +52,8 @@ class FirestoreScenarioRepository(
 
     override fun getScenarios(loanId: String): Flow<List<Scenario>> =
         auth.currentUser.flatMapLatest { user ->
-            val db = if (user != null) FirebaseBackend.firestore(appContext) else null
-            if (db == null) {
+            val db = FirebaseBackend.firestore(appContext)
+            if (user == null || db == null) {
                 memory.map { list ->
                     list.filter { it.loanId == loanId }.sortedByDescending { it.createdAtMillis }
                 }
@@ -91,8 +91,8 @@ class FirestoreScenarioRepository(
             "Unknown scenario kind: $kind"
         }
         val user = auth.currentUserNow()
-        val db = if (user != null) FirebaseBackend.firestore(appContext) else null
-        if (db == null) {
+        val db = FirebaseBackend.firestore(appContext)
+        if (user == null || db == null) {
             val scenario = Scenario(
                 id = UUID.randomUUID().toString(),
                 loanId = loanId,

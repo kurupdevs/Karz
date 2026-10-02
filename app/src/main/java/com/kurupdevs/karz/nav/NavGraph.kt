@@ -4,9 +4,8 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideIntoContainer
-import androidx.compose.animation.slideOutOfContainer
 import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -378,9 +377,27 @@ private inline fun <reified T : Any> androidx.navigation.NavGraphBuilder.tabDest
         popEnterTransition = { fadeIn(tween(200)) },
         popExitTransition = { fadeOut(tween(200)) }
     ) {
-        CompositionLocalProvider(LocalNavVisibilityScope provides this) {
-            TabScaffold(navController = navController, content = content)
-        }
+        TabVisibilityScaffold(
+            visibilityScope = this,
+            navController = navController,
+            content = content
+        )
+    }
+}
+
+/**
+ * Wraps the tab scaffold in the nav-provided [AnimatedVisibilityScope].
+ * Split out so the crossinline [content] of [tabDestination] is passed as a
+ * plain argument instead of being captured in a non-inline lambda.
+ */
+@Composable
+private fun TabVisibilityScaffold(
+    visibilityScope: AnimatedVisibilityScope,
+    navController: NavHostController,
+    content: @Composable () -> Unit
+) {
+    CompositionLocalProvider(LocalNavVisibilityScope provides visibilityScope) {
+        TabScaffold(navController = navController, content = content)
     }
 }
 

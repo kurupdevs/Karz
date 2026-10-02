@@ -94,6 +94,7 @@ fun HomeScreen(
     var refreshing by remember { mutableStateOf(false) }
     var choreoToken by remember { mutableStateOf(0) }
     var loanToDelete by remember { mutableStateOf<Loan?>(null) }
+    val pullRefreshState = rememberPullToRefreshState()
 
     loanToDelete?.let { doomed ->
         AlertDialog(
@@ -121,13 +122,13 @@ fun HomeScreen(
             }
         },
         modifier = Modifier.fillMaxSize(),
-        state = rememberPullToRefreshState(),
+        state = pullRefreshState,
         indicator = {
             PullToRefreshDefaults.Indicator(
+                state = pullRefreshState,
                 isRefreshing = refreshing,
                 containerColor = CardWhite,
                 color = PurpleSolid,
-                threshold = 64.dp
             )
         }
     ) {

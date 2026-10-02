@@ -24,7 +24,7 @@ data class SyncState(
 }
 
 fun SnapshotMetadata.toSyncState(): SyncState =
-    SyncState(isFromCache = isFromCache, hasPendingWrites = hasPendingWrites)
+    SyncState(isFromCache = isFromCache, hasPendingWrites = hasPendingWrites())
 
 /** Convenience for repositories that have no listener to report. */
 fun staticSyncState(): Flow<SyncState> = flowOf(SyncState.LOCAL)

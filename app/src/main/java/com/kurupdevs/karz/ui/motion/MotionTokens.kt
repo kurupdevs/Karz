@@ -7,8 +7,10 @@ import android.view.HapticFeedbackConstants
 import android.view.View
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -70,6 +72,9 @@ object Motion {
 
     /** Nav transitions (0.05, 0.7, 0.1, 1). */
     val EaseNav = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
+
+    /** Standard ease-in-out for entrances/exits. */
+    val EaseInOut: Easing = androidx.compose.animation.core.FastOutSlowInEasing
 
     /** Card entrances, most fades/slides. */
     fun <T> easeOutQuint(durationMs: Int = 400): AnimationSpec<T> =

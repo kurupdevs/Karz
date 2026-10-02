@@ -76,8 +76,8 @@ class FirestoreDocumentRepository(
 
     override fun getDocuments(loanId: String?): Flow<List<LoanDocument>> {
         val remote: Flow<List<LoanDocument>> = auth.currentUser.flatMapLatest { user ->
-            val db = if (user != null) FirebaseBackend.firestore(appContext) else null
-            if (db == null) {
+            val db = FirebaseBackend.firestore(appContext)
+            if (user == null || db == null) {
                 memoryDocs
             } else {
                 callbackFlow {
@@ -182,8 +182,8 @@ class FirestoreDocumentRepository(
             return@runCatching
         }
         val user = auth.currentUserNow()
-        val db = if (user != null) FirebaseBackend.firestore(appContext) else null
-        if (db == null) {
+        val db = FirebaseBackend.firestore(appContext)
+        if (user == null || db == null) {
             memoryDocs.update { list -> list.filterNot { it.id == docId } }
             return@runCatching
         }

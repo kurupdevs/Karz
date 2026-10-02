@@ -54,6 +54,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kurupdevs.karz.data.model.Loan
 import com.kurupdevs.karz.data.model.LoanStatus
@@ -477,6 +478,7 @@ private fun PaymentHistoryList(
     var refreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val dateFmt = remember { DateTimeFormatter.ofPattern("d MMM yyyy") }
+    val pullRefreshState = rememberPullToRefreshState()
 
     PullToRefreshBox(
         isRefreshing = refreshing,
@@ -488,13 +490,13 @@ private fun PaymentHistoryList(
             }
         },
         modifier = modifier,
-        state = rememberPullToRefreshState(),
+        state = pullRefreshState,
         indicator = {
             PullToRefreshDefaults.Indicator(
+                state = pullRefreshState,
                 isRefreshing = refreshing,
                 containerColor = CardWhite,
                 color = PurpleSolid,
-                threshold = 64.dp
             )
         }
     ) {

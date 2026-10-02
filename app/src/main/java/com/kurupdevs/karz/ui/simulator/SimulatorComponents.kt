@@ -4,6 +4,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -71,6 +73,10 @@ object SimMotion {
     val bouncy = spring<Float>(dampingRatio = 0.6f, stiffness = 400f)
     val snappy = spring<Float>(dampingRatio = 0.85f, stiffness = 1200f)
     val gentle = spring<Float>(dampingRatio = 0.9f, stiffness = 200f)
+
+    /** IntSize variant for expand/shrink transitions (they need FiniteAnimationSpec<IntSize>). */
+    val gentleIntSize: FiniteAnimationSpec<IntSize> =
+        spring(dampingRatio = 0.9f, stiffness = 200f)
 }
 
 /** Tabular numerals for every money figure. */
@@ -137,8 +143,8 @@ fun WorkingExpandable(
             }
             AnimatedVisibility(
                 visible = open,
-                enter = expandVertically(animationSpec = SimMotion.gentle) + fadeIn(),
-                exit = shrinkVertically(animationSpec = SimMotion.gentle) + fadeOut(),
+                enter = expandVertically(animationSpec = SimMotion.gentleIntSize) + fadeIn(),
+                exit = shrinkVertically(animationSpec = SimMotion.gentleIntSize) + fadeOut(),
             ) {
                 Column {
                     Spacer(Modifier.height(10.dp))

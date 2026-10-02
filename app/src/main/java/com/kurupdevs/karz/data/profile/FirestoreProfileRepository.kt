@@ -1,7 +1,7 @@
 package com.kurupdevs.karz.data.profile
 
 import android.content.Context
-import com.google.firebase.FieldValue
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.Timestamp
 import com.kurupdevs.karz.data.FirebaseBackend
 import com.kurupdevs.karz.data.auth.FirebaseAuthService
@@ -35,8 +35,8 @@ class FirestoreProfileRepository(
 
     override fun getProfile(): Flow<UserProfile> =
         auth.currentUser.flatMapLatest { user ->
-            val db = if (user != null) FirebaseBackend.firestore(appContext) else null
-            if (db == null) {
+            val db = FirebaseBackend.firestore(appContext)
+            if (user == null || db == null) {
                 localProfile
             } else {
                 callbackFlow {
@@ -152,8 +152,8 @@ class FirestoreProfileRepository(
 
     private suspend fun writeField(field: String, value: Any) {
         val user = auth.currentUserNow()
-        val db = if (user != null) FirebaseBackend.firestore(appContext) else null
-        if (db != null) {
+        val db = FirebaseBackend.firestore(appContext)
+        if (user != null && db != null) {
             db.collection("users").document(user.uid).update(
                 mapOf(field to value, "updatedAt" to FieldValue.serverTimestamp())
             ).awaitTask()
