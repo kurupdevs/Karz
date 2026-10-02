@@ -13,7 +13,7 @@ plugins {
 
 android {
     namespace = "com.kurupdevs.karz"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.kurupdevs.karz"

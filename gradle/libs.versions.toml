@@ -1,6 +1,6 @@
 # Karz version catalog. Every version lives here, never in build.gradle.kts.
 [versions]
-agp = "8.13.2"
+agp = "9.1.0"
 kotlin = "2.2.20"
 composeBom = "2026.09.00"
 navigationCompose = "2.9.8"
