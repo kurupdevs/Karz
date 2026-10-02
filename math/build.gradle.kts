@@ -1,6 +1,10 @@
 // Pure Kotlin/JVM module: the loan math engine. Zero Android dependencies.
 plugins {
-    alias(libs.plugins.kotlin.jvm)
+    // Version-less: the plugin version is pinned once in the root build file
+    // (alias(libs.plugins.kotlin.jvm) apply false). Requesting it with a
+    // version here trips Gradle's "already on the classpath with an unknown
+    // version" check because kotlin-gradle-plugin also backs kotlin.android.
+    id("org.jetbrains.kotlin.jvm")
 }
 
 kotlin {
