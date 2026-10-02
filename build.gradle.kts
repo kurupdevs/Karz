@@ -1,7 +1,8 @@
 // Top-level build file. Version catalog: gradle/libs.versions.toml
 plugins {
     alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.kotlin.android) apply false
+    // NOTE (AGP 9+): org.jetbrains.kotlin.android is built into AGP now and
+    // must NOT be applied. kotlin.jvm is still declared for the :math module.
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.kotlin.serialization) apply false
