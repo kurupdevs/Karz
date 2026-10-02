@@ -1,0 +1,1 @@
+{"fieldOverrides":[],"indexes":[{"collectionGroup":"loans","fields":[{"fieldPath":"status","order":"ASCENDING"},{"fieldPath":"nextDueDate","order":"ASCENDING"}],"queryScope":"COLLECTION_GROUP"}]}

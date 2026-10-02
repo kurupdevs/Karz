@@ -1,0 +1,25 @@
+rules_version = '2';
+
+// Karz Storage rules.
+// Owner-only access. 15 MB cap and mime allowlist enforced here as well as
+// client-side (rules are the real enforcement; client checks are UX).
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /users/{uid}/docs/{docId}/{fileName} {
+      function isOwner() {
+        return request.auth != null && request.auth.uid == uid;
+      }
+      function validFile() {
+        return request.resource.size < 15 * 1024 * 1024
+            && (request.resource.contentType == 'application/pdf'
+                || request.resource.contentType == 'image/jpeg'
+                || request.resource.contentType == 'image/png'
+                || request.resource.contentType == 'image/webp');
+      }
+      allow read: if isOwner();
+      allow write: if isOwner() && validFile();
+      allow delete: if isOwner();
+    }
+  }
+}

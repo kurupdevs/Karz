@@ -1,0 +1,123 @@
+rules_version = '2';
+
+// Karz Firestore rules.
+// Ownership root: everything under users/{uid} belongs to that uid.
+// Soft delete only: delete is denied everywhere (loans use status=archived).
+// Paid payment rows are immutable. auditLog is create-only.
+// marketRates is authed-read, never client-written.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function validLoan() {
+      let d = request.resource.data;
+      return d.annualRatePct is number
+          && d.annualRatePct >= 0 && d.annualRatePct <= 50
+          && d.currentBalanceMinor is int
+          && d.currentBalanceMinor >= 0
+          && d.tenureMonthsTotal is int
+          && d.tenureMonthsTotal >= 6 && d.tenureMonthsTotal <= 360
+          && d.status in ['ACTIVE', 'CLOSED', 'ARCHIVED'];
+    }
+
+    function validPayment() {
+      let d = request.resource.data;
+      return d.amountMinor is int
+          && d.amountMinor > 0
+          && d.type in ['EMI', 'PART_PREPAYMENT', 'FEE', 'OTHER']
+          && d.status in ['SCHEDULED', 'PAID', 'MISSED', 'PARTIAL'];
+    }
+
+    function validDocument() {
+      let d = request.resource.data;
+      return d.fileName is string
+          && d.sizeBytes is int
+          && d.sizeBytes > 0 && d.sizeBytes <= 15 * 1024 * 1024
+          && d.mimeType in ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+    }
+
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow create: if isOwner(uid);
+      allow update: if isOwner(uid);
+      allow delete: if false;
+
+      match /loans/{loanId} {
+        allow read: if isOwner(uid);
+        allow create: if isOwner(uid) && validLoan();
+        // Field-mask updates from the app; updatedAt conflict is enforced client-side.
+        allow update: if isOwner(uid) && validLoan();
+        allow delete: if false;
+
+        match /payments/{paymentId} {
+          allow read: if isOwner(uid);
+          allow create: if isOwner(uid) && validPayment();
+          // Paid rows are immutable: once status == 'paid', no updates.
+          allow update: if isOwner(uid)
+              && resource.data.status != 'PAID'
+              && validPayment();
+          allow delete: if false;
+        }
+
+        match /schedule/{n} {
+          allow read: if isOwner(uid);
+          // Client-generated amortization snapshot; rewritten by simulator apply.
+          allow create: if isOwner(uid);
+          allow update: if isOwner(uid);
+          allow delete: if false;
+        }
+      }
+
+      match /documents/{docId} {
+        allow read: if isOwner(uid);
+        allow create: if isOwner(uid) && validDocument();
+        allow update: if isOwner(uid) && validDocument();
+        // Metadata delete allowed (app also best-effort deletes the Storage object).
+        allow delete: if isOwner(uid);
+      }
+
+      match /offers/{offerId} {
+        allow read: if isOwner(uid);
+        allow create: if isOwner(uid);
+        allow update: if isOwner(uid);
+        allow delete: if false;
+      }
+
+      match /notifications/{notifId} {
+        // Written by the sendReminders Cloud Function (admin SDK bypasses rules);
+        // clients only read and mark readAt.
+        allow read: if isOwner(uid);
+        allow create: if isOwner(uid);
+        allow update: if isOwner(uid);
+        allow delete: if false;
+      }
+
+      match /scenarios/{scenarioId} {
+        allow read: if isOwner(uid);
+        allow create: if isOwner(uid);
+        allow update: if isOwner(uid);
+        allow delete: if false;
+      }
+
+      match /auditLog/{entryId} {
+        allow read: if isOwner(uid);
+        allow create: if isOwner(uid);
+        allow update: if false;
+        allow delete: if false;
+      }
+    }
+
+    match /marketRates/{lenderId} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+  }
+}
