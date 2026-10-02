@@ -2,9 +2,7 @@ package com.kurupdevs.karz.ui.theme
 
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.MaterialExpressiveTheme
-import androidx.compose.material3.MotionScheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -48,16 +46,14 @@ object MortgageRadii {
 }
 
 /**
- * Light M3 Expressive theme. v1 is light-only per SPEC (navy cards carry
+ * Light M3 theme. v1 is light-only per SPEC (navy cards carry
  * the dark surfaces); no dark theme needed.
  */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun KarzTheme(content: @Composable () -> Unit) {
-    MaterialExpressiveTheme(
+    MaterialTheme(
         colorScheme = MortgageLightColors,
         typography = MortgageTypography,
-        motionScheme = MotionScheme.expressive(),
         content = content
     )
 }

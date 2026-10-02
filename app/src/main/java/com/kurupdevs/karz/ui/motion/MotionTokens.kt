@@ -8,6 +8,7 @@ import android.view.View
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.Easing
+import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -77,7 +78,7 @@ object Motion {
     val EaseInOut: Easing = androidx.compose.animation.core.FastOutSlowInEasing
 
     /** Card entrances, most fades/slides. */
-    fun <T> easeOutQuint(durationMs: Int = 400): AnimationSpec<T> =
+    fun <T> easeOutQuint(durationMs: Int = 400): FiniteAnimationSpec<T> =
         tween(durationMs, easing = EaseOutQuint)
 
     /** Crossfades, skeleton to content. */

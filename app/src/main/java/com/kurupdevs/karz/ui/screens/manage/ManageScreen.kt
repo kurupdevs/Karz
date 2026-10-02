@@ -345,7 +345,7 @@ private fun PaymentSheet(
 
             Text(
                 if (amountStr.isBlank()) "${currencySymbol(currency)}0" else "${currencySymbol(currency)}$amountStr",
-                style = MortgageTypography.displayLarge.copy(fontSize = androidx.compose.ui.unit.sp(38))
+                style = MortgageTypography.displayLarge.copy(fontSize = 38.sp)
             )
             Spacer(Modifier.height(6.dp))
             AmountKeypad(
@@ -434,7 +434,7 @@ private fun EmiDaySheet(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 StepperBtn(Icons.Filled.Remove) { if (day > 1) day-- }
                 Spacer(Modifier.width(20.dp))
-                Text("$day", style = MortgageTypography.displayLarge.copy(fontSize = androidx.compose.ui.unit.sp(44)))
+                Text("$day", style = MortgageTypography.displayLarge.copy(fontSize = 44.sp))
                 Spacer(Modifier.width(20.dp))
                 StepperBtn(Icons.Filled.Add) { if (day < 28) day++ }
             }
