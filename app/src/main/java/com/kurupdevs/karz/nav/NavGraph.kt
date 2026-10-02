@@ -368,7 +368,7 @@ private fun SimulateTab(
  */
 private inline fun <reified T : Any> androidx.navigation.NavGraphBuilder.tabDestination(
     navController: NavHostController,
-    crossinline content: @Composable () -> Unit
+    noinline content: @Composable () -> Unit
 ) {
     composable<T>(
         enterTransition = { fadeIn(tween(200)) },
@@ -376,12 +376,8 @@ private inline fun <reified T : Any> androidx.navigation.NavGraphBuilder.tabDest
         popEnterTransition = { fadeIn(tween(200)) },
         popExitTransition = { fadeOut(tween(200)) }
     ) {
-        // Copy the crossinline lambda to a local: the parameter itself may not
-        // be referenced inside the non-inline CompositionLocalProvider lambda.
-        val tabContent = content
-        val visibilityScope = this
-        CompositionLocalProvider(LocalNavVisibilityScope provides visibilityScope) {
-            TabScaffold(navController = navController, content = tabContent)
+        CompositionLocalProvider(LocalNavVisibilityScope provides this) {
+            TabScaffold(navController = navController, content = content)
         }
     }
 }
